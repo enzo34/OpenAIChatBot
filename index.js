@@ -20,14 +20,20 @@ const openai = new OpenAIApi(configuration);
 // Fais une route qui me permet d'envoyer des messages au bot
 app.post('/bot', async (req, res) => {
     // Utilisation de l'instruction await pour attendre la réponse de l'API
+    console.log(req.body.model)
     const bot = await openai.createCompletion({
-        model: "text-davinci-003",
+        model: req.body.model,
         prompt: req.body.input,
         max_tokens: 2200
     });
     
     console.log(bot.data)
     res.status(200).json({message: bot.data.choices[0].text});
+})
+
+app.get('/bot/models', async(req, res) => { 
+    const response = await openai.listModels();
+    res.status(200).json({data: response.data.data});
 })
 
 
